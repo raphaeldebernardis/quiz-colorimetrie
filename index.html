@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Colorimétrie</title>
+    <!-- React et ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel pour transformer JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide React (icônes) -->
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
 </head>
 <body>
     <div id="root"></div>
@@ -28,6 +32,7 @@
           const [startTime, setStartTime] = useState(null);
           const [endTime, setEndTime] = useState(null);
           
+          // Données du quiz (toutes les 20 questions)
           const questions = [
             {
               question: "Avec quelle couleur neutralise-t-on un fond de décoloration rouge (hauteur de ton 4) ?",
@@ -78,9 +83,60 @@
               question: "Si le fond de décoloration est orange, quelle neutralisation applique-t-on ?",
               correct: "Bleu",
               options: ["Bleu", "0,002", "Vert + Bleu", "Rouge"]
+            },
+            {
+              question: "Quel est le fond de décoloration d'un ton 6 ?",
+              correct: "Orange",
+              options: ["Orange", "Bleu", "Irisé très clair", "Bleu irisé"]
+            },
+            {
+              question: "À quelle hauteur correspond un fond orange ?",
+              correct: "6",
+              options: ["6", "0,003", "Bleu", "Jaune très clair"]
+            },
+            {
+              question: "Quelle neutralisation utiliser face à un fond orangé jaune (hauteur 7) ?",
+              correct: "Bleu irisé",
+              options: ["Bleu irisé", "0,3", "0,1", "Orange"]
+            },
+            {
+              question: "Quel fond de déco retrouve-t-on sur un ton 7 ?",
+              correct: "Orangé jaune",
+              options: ["Orangé jaune", "Bleu", "8", "Irisé"]
+            },
+            {
+              question: "Une hauteur de ton 7 présente quel fond de déco ?",
+              correct: "Orangé jaune",
+              options: ["Orangé jaune", "0,8", "Orange", "Bleu"]
+            },
+            {
+              question: "Le bleu irisé neutralise quelle hauteur de ton ?",
+              correct: "7",
+              options: ["7", "10", "Orange", "0,2"]
+            },
+            {
+              question: "Avec quelle nuance neutraliser un fond jaune (hauteur 8) ?",
+              correct: "Irisé",
+              options: ["Irisé", "4", "Jaune très clair", "0,46"]
+            },
+            {
+              question: "À quoi correspond un fond de décoloration jaune ?",
+              correct: "Hauteur de ton 8",
+              options: ["Hauteur de ton 8", "Irisé clair", "0,2", "6"]
+            },
+            {
+              question: "Le fond de décoloration d'un ton 8 est ?",
+              correct: "Jaune",
+              options: ["Jaune", "0,13", "0,8", "Vert"]
+            },
+            {
+              question: "Le jaune se neutralise avec quelle tonalité ?",
+              correct: "Irisé",
+              options: ["Irisé", "5", "Bleu", "Orangé jaune"]
             }
           ];
 
+          // Fonction pour mélanger un array
           const shuffleArray = (array) => {
             const shuffled = [...array];
             for (let i = shuffled.length - 1; i > 0; i--) {
@@ -90,14 +146,16 @@
             return shuffled;
           };
 
+          // Fonction pour sélectionner 10 questions aléatoirement
           const selectRandomQuestions = () => {
             const shuffled = shuffleArray(questions);
-            return shuffled.slice(0, 5).map(q => ({
+            return shuffled.slice(0, 10).map(q => ({
               ...q,
               options: shuffleArray(q.options)
             }));
           };
 
+          // Connexion
           const handleLogin = (email, password) => {
             const user = users.find(u => u.email === email && u.password === password);
             if (user) {
@@ -108,6 +166,7 @@
             return false;
           };
 
+          // Inscription
           const handleRegister = (email, password, nickname) => {
             if (users.find(u => u.email === email)) {
               return { success: false, error: 'Cet email est déjà utilisé' };
@@ -134,6 +193,7 @@
             return { success: true };
           };
 
+          // Démarrer le quiz
           const startQuiz = () => {
             const randomQuestions = selectRandomQuestions();
             setCurrentQuiz(randomQuestions);
@@ -145,6 +205,7 @@
             setScreen('quiz');
           };
 
+          // Répondre à une question
           const answerQuestion = (answer) => {
             if (!answer || selectedAnswer !== '') return;
             
@@ -187,6 +248,7 @@
             }
           };
 
+          // Calculer le rang
           const calculateRank = () => {
             const allScores = users.flatMap(user => 
               user.scores.map(score => ({ ...score, nickname: user.nickname }))
@@ -210,12 +272,14 @@
             return { rank, total: allScores.length };
           };
 
+          // Formatage du temps
           const formatTime = (ms) => {
             const seconds = Math.floor(ms / 1000);
             const milliseconds = ms % 1000;
             return `${seconds}.${milliseconds.toString().padStart(3, '0')}s`;
           };
 
+          // Écran d'authentification
           const AuthScreen = () => {
             const [isLogin, setIsLogin] = useState(true);
             const [email, setEmail] = useState('');
@@ -316,6 +380,7 @@
             );
           };
 
+          // Menu principal
           const MenuScreen = () => (
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
               <div className="max-w-2xl mx-auto">
@@ -335,7 +400,7 @@
                     >
                       <Play className="w-8 h-8" />
                       <span className="font-semibold">Commencer le Quiz</span>
-                      <span className="text-sm opacity-90">5 questions aléatoires</span>
+                      <span className="text-sm opacity-90">10 questions aléatoires</span>
                     </button>
                     
                     <button
@@ -375,6 +440,7 @@
             </div>
           );
 
+          // Écran de quiz
           const QuizScreen = () => (
             <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
               <div className="max-w-2xl mx-auto">
@@ -382,7 +448,7 @@
                   <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center gap-2">
                       <Target className="w-5 h-5 text-indigo-600" />
-                      <span className="text-lg font-semibold">Question {currentQuestion + 1}/{currentQuiz.length}</span>
+                      <span className="text-lg font-semibold">Question {currentQuestion + 1}/10</span>
                     </div>
                     <div className="flex items-center gap-2 text-gray-600">
                       <Clock className="w-4 h-4" />
@@ -391,7 +457,9 @@
                   </div>
                   
                   <div className="mb-8">
-                    <h2 className="text-xl font-semibold mb-6 text-gray-800">{currentQuiz[currentQuestion]?.question}</h2>
+                    <h2 className="text-xl font-semibold mb-6 text-gray-800">
+                      {currentQuiz[currentQuestion]?.question}
+                    </h2>
                     
                     <div className="space-y-3">
                       {currentQuiz[currentQuestion]?.options.map((option, index) => (
@@ -412,7 +480,7 @@
                   </div>
                   
                   <div className="flex justify-between">
-                    <div className="text-sm text-gray-500">Question {currentQuestion + 1} sur {currentQuiz.length}</div>
+                    <div className="text-sm text-gray-500">Question {currentQuestion + 1} sur 10</div>
                     <div className="text-sm text-gray-500">Cliquez sur votre réponse</div>
                   </div>
                 </div>
@@ -420,6 +488,7 @@
             </div>
           );
 
+          // Écran de résultats
           const ResultsScreen = () => {
             const score = answers.filter(a => a.isCorrect).length;
             const totalTime = endTime - startTime;
@@ -439,7 +508,7 @@
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                       <div className="text-center p-4 bg-blue-50 rounded-lg">
                         <Target className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                        <div className="text-2xl font-bold text-blue-600">{score}/{currentQuiz.length}</div>
+                        <div className="text-2xl font-bold text-blue-600">{score}/10</div>
                         <div className="text-sm text-gray-600">Bonnes réponses</div>
                       </div>
                       
@@ -460,17 +529,16 @@
                       <h3 className="text-lg font-semibold mb-4">Détail des réponses:</h3>
                       <div className="space-y-2 max-h-60 overflow-y-auto">
                         {answers.map((answer, index) => (
-                          <div
-                            key={index} 
-                            className={`p-3 rounded-lg ${answer.isCorrect ? 'bg-green-50' : 'bg-red-50'}`}
-                          >
+                          <div key={index} className={`p-3 rounded-lg ${answer.isCorrect ? 'bg-green-50' : 'bg-red-50'}`}>
                             <div className="text-sm font-medium">{answer.question}</div>
                             <div className="text-xs mt-1">
                               <span className={answer.isCorrect ? 'text-green-600' : 'text-red-600'}>
                                 Votre réponse: {answer.selected}
                               </span>
                               {!answer.isCorrect && (
-                                <span className="text-green-600 ml-2">(Correct: {answer.correct})</span>
+                                <span className="text-green-600 ml-2">
+                                  (Correct: {answer.correct})
+                                </span>
                               )}
                             </div>
                           </div>
@@ -499,6 +567,7 @@
             );
           };
 
+          // Écran de classement
           const LeaderboardScreen = () => {
             const allScores = users.flatMap(user => 
               user.scores.map(score => ({ ...score, nickname: user.nickname }))
@@ -525,12 +594,9 @@
                     ) : (
                       <div className="space-y-2 mb-8">
                         {allScores.slice(0, 10).map((score, index) => (
-                          <div
-                            key={index} 
-                            className={`flex items-center justify-between p-4 rounded-lg ${
-                              score.nickname === currentUser.nickname ? 'bg-indigo-50 border-2 border-indigo-200' : 'bg-gray-50'
-                            }`}
-                          >
+                          <div key={index} className={`flex items-center justify-between p-4 rounded-lg ${
+                            score.nickname === currentUser.nickname ? 'bg-indigo-50 border-2 border-indigo-200' : 'bg-gray-50'
+                          }`}>
                             <div className="flex items-center gap-3">
                               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                                 index === 0 ? 'bg-yellow-500 text-white' :
@@ -546,7 +612,7 @@
                               </div>
                             </div>
                             <div className="text-right">
-                              <div className="font-semibold">{score.score}/{score.totalQuestions}</div>
+                              <div className="font-semibold">{score.score}/10</div>
                               <div className="text-xs text-gray-500">{formatTime(score.totalTime)}</div>
                             </div>
                           </div>
@@ -568,6 +634,7 @@
             );
           };
 
+          // Rendu principal
           if (!currentUser) {
             return <AuthScreen />;
           }
@@ -586,7 +653,8 @@
           }
         };
 
-        ReactDOM.render(React.createElement(ColorimetryQuiz), document.getElementById('root'));
+        // Rendu de l'application
+        ReactDOM.render(<ColorimetryQuiz />, document.getElementById('root'));
     </script>
 </body>
 </html>
